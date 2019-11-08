@@ -140,10 +140,13 @@ module Pledge {
                 die X::OpenBSD::Pledge.new(permission => $key, :noexsist);
             }
         }
+
         my $only = any %changes.values;
         if $only {
-            for %permlist.values <-> $val {
-                $val = False;
+            for %permlist.keys -> $key {
+                if $key !(elem) %changes {
+                    %changes{$key} = False;
+                }
             }
         }
 
@@ -151,6 +154,9 @@ module Pledge {
             if !%permlist{$key} & $val {
                 die X::OpenBSD::Pledge.new(permission => $key, :removed);
             }
+        }
+
+        for %changes.kv -> $key, $val {
             %permlist{$key} = ?$val;
         }
     }
