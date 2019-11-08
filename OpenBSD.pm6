@@ -8,9 +8,9 @@ our sub pledge(Str is encoded('utf8'), Str is encoded('utf8')) returns int32 is 
 class X::OpenBSD::Unveil is Exception {
     has $.path;
     has $.ret-value;
-    has $.final;
+    has $.locked;
     method message {
-        return "Cannot change $.path, unveil is already final" if $.final;
+        return "Cannot change $.path, unveil is already locked" if $.locked;
         return "Unveil for $.path failed with return value $.ret-value" if $.path;
         return "Unveil failed with return value $.ret-value";
     }
@@ -27,10 +27,10 @@ class UnveiledPath {
 class Unveil {
     has %!paths;
     has $.active = False;
-    has $.final = False;
+    has $.locked = False;
 
     method set($path, :$r, :$w, :$x, :$c, :$rw, :$rx, :$rwc) {
-        die X::OpenBSD::Unveil.new(path => $path, :final) if $.final;
+        die X::OpenBSD::Unveil.new(path => $path, :locked) if $.locked;
 
         my $permissions = "";
         my $abs-path = $path.IO.absolute;
@@ -66,10 +66,10 @@ class Unveil {
         %!paths{$path.IO.absolute}:delete;
     }
 
-    method finish {
+    method lock {
         my $ret = unveil(Str, Str);
         die X::OpenBSD::Unveil.new(ret-value => $ret) if $ret != 0;
-        $!final = True;
+        $!locked = True;
     }
 
     method paths {
