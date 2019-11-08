@@ -159,7 +159,7 @@ module Pledge {
         %permlist.grep(*.value)>>.key.join(' ');
     }
 
-    our sub set(%changes) {
+    our sub set(*%changes) {
         modlist(%permissions, %changes);
         my $perms = genstr(%permissions);
         my $execperms = genstr(%exec-permissions);
