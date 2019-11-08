@@ -90,7 +90,7 @@ class X::OpenBSD::Pledge is Exception {
     has $.noexsist;
     has $.removed;
     method message {
-        return "$.permission is not a valid pledge promise" if $.noexsist;
+        return "{$.permission.key} is not a valid pledge promise" if $.noexsist;
         return "$.permission cannot be promised, already removed" if $.removed;
         return "Pledge exception";
     }
