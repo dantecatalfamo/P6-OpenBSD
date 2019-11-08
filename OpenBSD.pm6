@@ -94,41 +94,47 @@ class X::OpenBSD::Pledge is Exception {
 module Pledge {
     my $active = False;
 
-    my permissions = {
-        stdio => True,
-        rpath => True,
-        wpath => True,
-        cpath => True,
-        dpath => True,
-        tmppath => True,
-        inet => True,
-        mcast => True,
-        fattr => True,
-        chown => True,
-        flock => True,
-        unix => True,
-        dns => True,
-        getpw => True,
-        sendfd => True,
-        recvfd => True,
-        tape => True,
-        tty => True,
-        proc => True,
-        exec => True,
-        prot_exec => True,
-        settime => True,
-        ps => True,
-        vminfo => True,
-        id => True,
-        pf => True,
-        audio => True,
-        video => True,
-        bpf => True,
-        unveil => True,
-        error => True,
+    my %permissions = {
+        :stdio,
+        :rpath,
+        :wpath,
+        :cpath,
+        :dpath,
+        :tmppath,
+        :inet,
+        :mcast,
+        :fattr,
+        :chown,
+        :flock,
+        :unix,
+        :dns,
+        :getpw,
+        :sendfd,
+        :recvfd,
+        :tape,
+        :tty,
+        :proc,
+        :exec,
+        :prot,
+        :settime,
+        :ps,
+        :vminfo,
+        :id,
+        :pf,
+        :audio,
+        :video,
+        :bpf,
+        :unveil,
+        :error,
     }
 
+    my %exec-permissions = %permissions.clone;
+
     our sub set() {
+        False;
+    }
+
+    our sub set-exec() {
         False;
     }
 }
