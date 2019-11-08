@@ -11,8 +11,8 @@ class X::OpenBSD::Unveil is Exception {
     has $.final;
     method message {
         return "Cannot change $.path, unveil is already final" if $.final;
-        return "Unveil failed with return value $.ret-value" if !$.path;
-        return "Unveil for $.path failed with return value $.ret-value";
+        return "Unveil for $.path failed with return value $.ret-value" if $.path;
+        return "Unveil failed with return value $.ret-value";
     }
 }
 
