@@ -86,8 +86,13 @@ module Unveil is export {
 }
 
 class X::OpenBSD::Pledge is Exception {
+    has $.permission;
+    has $.noexsist;
+    has $.removed;
     method message {
-        "Pledge exception";
+        return "$.permission is not a valid pledge promise" if $.noexsist;
+        return "$.permission cannot be promised, already removed" if $.removed;
+        return "Pledge exception";
     }
 }
 
