@@ -80,3 +80,45 @@ module Unveil is export {
         $active
     }
 }
+
+module Pledge {
+    my $active = False;
+
+    my permissions = {
+        stdio => True,
+        rpath => True,
+        wpath => True,
+        cpath => True,
+        dpath => True,
+        tmppath => True,
+        inet => True,
+        mcast => True,
+        fattr => True,
+        chown => True,
+        flock => True,
+        unix => True,
+        dns => True,
+        getpw => True,
+        sendfd => True,
+        recvfd => True,
+        tape => True,
+        tty => True,
+        proc => True,
+        exec => True,
+        prot_exec => True,
+        settime => True,
+        ps => True,
+        vminfo => True,
+        id => True,
+        pf => True,
+        audio => True,
+        video => True,
+        bpf => True,
+        unveil => True,
+        error => True,
+    }
+
+    our sub set() {
+        False;
+    }
+}
