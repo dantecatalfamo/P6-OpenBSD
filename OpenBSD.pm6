@@ -90,13 +90,13 @@ class X::OpenBSD::Pledge is Exception {
     has $.noexsist;
     has $.removed;
     method message {
-        return "{$.permission.key} is not a valid pledge promise" if $.noexsist;
+        return "$.permission is not a valid pledge promise" if $.noexsist;
         return "$.permission cannot be promised, already removed" if $.removed;
         return "Pledge exception";
     }
 }
 
-module Pledge {
+module Pledge is export {
     my $active = False;
 
     my %permissions =
@@ -177,6 +177,7 @@ module Pledge {
     }
 
     our sub permissions {
-        %permissions.Map;
+        Map((self => %permissions.Map,
+             exec => %exec-permissions.Map));
     }
 }
