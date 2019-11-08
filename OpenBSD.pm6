@@ -75,4 +75,8 @@ module Unveil is export {
     our sub paths {
         %paths.values;
     }
+
+    our sub active {
+        $active
+    }
 }
