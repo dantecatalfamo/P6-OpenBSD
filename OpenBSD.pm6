@@ -99,7 +99,7 @@ class X::OpenBSD::Pledge is Exception {
 module Pledge {
     my $active = False;
 
-    my %permissions = {
+    my %permissions =
         :stdio,
         :rpath,
         :wpath,
@@ -130,15 +130,14 @@ module Pledge {
         :video,
         :bpf,
         :unveil,
-        :error,
-    }
+        :error;
 
     my %exec-permissions = %permissions.clone;
 
-    my sub modlist(%permlist is rw, %changes) {
-        for %changes -> $perm {
-            if %permlist{$perm}:!exists {
-                die X::OpenBSD::Pledge.new(permission => $perm, :noexsist);
+    my sub modlist(%permlist, %changes) {
+        for %changes.keys -> $key {
+            if %permlist{$key}:!exists {
+                die X::OpenBSD::Pledge.new(permission => $key, :noexsist);
             }
         }
         my $only = any %changes.values;
@@ -154,15 +153,24 @@ module Pledge {
             }
             %permlist{$key} = ?$val;
         }
-
-        %permlist.grep(*.value)>>.key;
     }
 
-    out sub set() {
-        False;
+    my sub genstr(%permlist) {
+        %permlist.grep(*.value)>>.key.join(' ');
+    }
+
+    our sub set(%changes) {
+        modlist(%permissions, %changes);
+        my $perms = genstr(%permissions);
+        my $execperms = genstr(%exec-permissions);
+        "Reg: $perms\nExec: $execperms";
     }
 
     our sub set-exec() {
         False;
+    }
+
+    our sub permissions {
+        %permissions.Map;
     }
 }
