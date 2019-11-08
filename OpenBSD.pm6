@@ -56,7 +56,7 @@ class Unveil {
         my $ret = unveil($path, $permissions);
         die X::OpenBSD::Unveil.new(path => $path, ret-value => $ret) if $ret != 0;
 
-        %!paths{$abs-path} = UnveiledPath.new(path => $abs-path.IO, r => $jr, w => $jw, x => $jx, c => $jc);
+        %!paths{$abs-path} = UnveiledPath.new(path => $abs-path, r => $jr, w => $jw, x => $jx, c => $jc);
 
         $!active = True;
     }
