@@ -135,8 +135,27 @@ module Pledge {
 
     my %exec-permissions = %permissions.clone;
 
-    our sub set() {
-        False;
+    our sub set(%perm-changes) {
+        for %perm-changes -> $perm {
+            if %perm-changes{$perm}:!exists {
+                die X::OpenBSD::Pledge.new(permission => $perm, :noexsist);
+            }
+        }
+        my $only = any %perm-changes.values;
+        if $only {
+            for %permissions.values <-> $val {
+                $val = False;
+            }
+        }
+
+        for %perm-changes.kv -> $key, $val {
+            if !%permissions{$key} & $val {
+                die X::OpenBSD::Pledge.new(permission => $key, :removed);
+            }
+            %permissions{$key} = ?$val;
+        }
+
+        %permissions.grep(*.value)>>.key;
     }
 
     our sub set-exec() {
