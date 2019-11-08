@@ -24,13 +24,13 @@ class UnveiledPath {
     has $.c;
 }
 
-class Unveil {
-    has %!paths;
-    has $.active = False;
-    has $.locked = False;
+module Unveil is export {
+    my %paths;
+    my $active = False;
+    my $locked = False;
 
-    method set($path, :$r, :$w, :$x, :$c, :$rw, :$rx, :$rwc) {
-        die X::OpenBSD::Unveil.new(path => $path, :locked) if $.locked;
+    our sub set($path, :$r, :$w, :$x, :$c, :$rw, :$rx, :$rwc) {
+        die X::OpenBSD::Unveil.new(path => $path, :locked) if $locked;
 
         my $permissions = "";
         my $abs-path = $path.IO.absolute;
@@ -53,26 +53,26 @@ class Unveil {
             $jc = True;
         }
 
-        my $ret = unveil($path, $permissions);
+        my $ret = unveil($abs-path, $permissions);
         die X::OpenBSD::Unveil.new(path => $path, ret-value => $ret) if $ret != 0;
 
-        %!paths{$abs-path} = UnveiledPath.new(path => $abs-path, r => $jr, w => $jw, x => $jx, c => $jc);
+        %paths{$abs-path} = UnveiledPath.new(path => $abs-path.IO, r => $jr, w => $jw, x => $jx, c => $jc);
 
-        $!active = True;
+        $active = True;
     }
 
-    method remove($path) {
-        self.set($path);
-        %!paths{$path.IO.absolute}:delete;
+    our sub remove($path) {
+        set($path);
+        %paths{$path.IO.absolute}:delete;
     }
 
-    method lock {
+    our sub lock {
         my $ret = unveil(Str, Str);
         die X::OpenBSD::Unveil.new(ret-value => $ret) if $ret != 0;
-        $!locked = True;
+        $locked = True;
     }
 
-    method paths {
-        %!paths.values;
+    our sub paths {
+        %paths.values;
     }
 }
