@@ -76,8 +76,18 @@ module Unveil is export {
         %paths.values;
     }
 
+    our sub locked {
+        $locked;
+    }
+
     our sub active {
         $active
+    }
+}
+
+class X::OpenBSD::Pledge is Exception {
+    method message {
+        "Pledge exception";
     }
 }
 
