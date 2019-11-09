@@ -12,7 +12,8 @@ class X::OpenBSD::Unveil is Exception {
     method message {
         return "Cannot change $.path, unveil is already locked" if $.locked;
         return "Unveil for $.path failed with return value $.return" if $.path;
-        return "Unveil failed with return value $.return";
+        return "Unveil failed with return value $.return"; if $.return;
+        return "Unveil exception";
     }
 }
 
@@ -84,6 +85,7 @@ module Unveil is export {
         $active
     }
 }
+
 
 class X::OpenBSD::Pledge is Exception {
     has $.permission;
