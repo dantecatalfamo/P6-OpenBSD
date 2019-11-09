@@ -7,7 +7,7 @@ sub MAIN(:w(:$with), :e(:$without), *@command) {
         say $*USAGE;
         exit;
     }
-    if $with & $without {
+    if $with && $without {
         say "Please choose either --with or --without, but not both";
         exit;
     }
