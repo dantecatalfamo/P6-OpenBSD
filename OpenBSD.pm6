@@ -174,7 +174,8 @@ module Pledge is export {
         my $execperms = genstr(%exec-permissions);
         my $ret = pledge($perms, $execperms);
         die X::OpenBSD::Pledge.new(return => $ret) if $ret != 0;
-        "Reg: $perms\nExec: $execperms";
+        $active = True;
+        "Self: $perms\nExec: $execperms";
     }
 
     our sub set(*%changes) {
@@ -190,5 +191,9 @@ module Pledge is export {
     our sub permissions {
         Map((self => %permissions.Map,
              exec => %exec-permissions.Map));
+    }
+
+    our sub active {
+        $active;
     }
 }
