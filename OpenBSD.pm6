@@ -7,12 +7,12 @@ our sub pledge(Str is encoded('utf8'), Str is encoded('utf8')) returns int32 is 
 
 class X::OpenBSD::Unveil is Exception {
     has $.path;
-    has $.ret-value;
+    has $.return;
     has $.locked;
     method message {
         return "Cannot change $.path, unveil is already locked" if $.locked;
-        return "Unveil for $.path failed with return value $.ret-value" if $.path;
-        return "Unveil failed with return value $.ret-value";
+        return "Unveil for $.path failed with return value $.return" if $.path;
+        return "Unveil failed with return value $.return";
     }
 }
 
@@ -54,7 +54,7 @@ module Unveil is export {
         }
 
         my $ret = unveil($abs-path, $permissions);
-        die X::OpenBSD::Unveil.new(path => $path, ret-value => $ret) if $ret != 0;
+        die X::OpenBSD::Unveil.new(path => $path, return => $ret) if $ret != 0;
 
         %paths{$abs-path} = UnveiledPath.new(path => $abs-path.IO, r => $jr, w => $jw, x => $jx, c => $jc);
 
@@ -68,7 +68,7 @@ module Unveil is export {
 
     our sub lock {
         my $ret = unveil(Str, Str);
-        die X::OpenBSD::Unveil.new(ret-value => $ret) if $ret != 0;
+        die X::OpenBSD::Unveil.new(return => $ret) if $ret != 0;
         $locked = True;
     }
 
