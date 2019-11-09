@@ -89,9 +89,11 @@ class X::OpenBSD::Pledge is Exception {
     has $.permission;
     has $.noexsist;
     has $.removed;
+    has $.return;
     method message {
         return "$.permission is not a valid pledge promise" if $.noexsist;
         return "$.permission cannot be promised, already removed" if $.removed;
+        return "Pledge failed with return value $.return" if $.return;
         return "Pledge exception";
     }
 }
@@ -165,15 +167,22 @@ module Pledge is export {
         %permlist.grep(*.value)>>.key.join(' ');
     }
 
-    our sub set(*%changes) {
-        modlist(%permissions, %changes);
+    my sub pledge-exec() {
         my $perms = genstr(%permissions);
         my $execperms = genstr(%exec-permissions);
+        my $ret = pledge($perms, $execperms);
+        die X::OpenBSD::Pledge.new(return => $ret) if $ret != 0;
         "Reg: $perms\nExec: $execperms";
     }
 
-    our sub set-exec() {
-        False;
+    our sub set(*%changes) {
+        modlist(%permissions, %changes);
+        pledge-exec();
+    }
+
+    our sub set-exec(*%changes) {
+        modlist(%exec-permissions, %changes);
+        pledge-exec();
     }
 
     our sub permissions {
