@@ -122,7 +122,7 @@ module Pledge is export {
         :tty,
         :proc,
         :exec,
-        :prot,
+        :prot_exec,
         :settime,
         :ps,
         :vminfo,
